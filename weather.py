@@ -37,7 +37,7 @@ def fetch(data_year): #returns true if there is new data
             last_fetched_date_str = existing_data[-1]['date']
             last_fetched_date = datetime.strptime(last_fetched_date_str, "%Y-%m-%d")
 
-            if last_fetched_date.day == end_date.day:
+            if last_fetched_date.date() == end_date.date():
                 complete = True #dataset complete
             else:
                 start_date = last_fetched_date + timedelta(days=1)

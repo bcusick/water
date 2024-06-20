@@ -20,8 +20,8 @@ def load_data(data_year):
     longitude   = config_data['longitude']
 
     retval = 1
-    #retval &= ETo.fetch(data_year)
-    #retval &= weather.fetch(data_year)
+    retval &= ETo.fetch(data_year)
+    retval &= weather.fetch(data_year)
 
     if retval:
         print('data updated.')
