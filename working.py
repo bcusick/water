@@ -61,7 +61,7 @@ def load_data(data_year):
 
     # Filter DataFrame based on date range
     start_date = pd.to_datetime(f'{data_year}-{budBreak}')  
-    end_date = pd.to_datetime(f'{data_year}-10-31')
+    end_date = pd.to_datetime(f'{data_year}-12-31')
     df = merged_df[(merged_df.index >= start_date) & (merged_df.index <= end_date)]
     print(df)
 
@@ -310,8 +310,7 @@ def plot_7(data_year):
     plt.figure(figsize=(12, 6))
 
     plt.plot(df.index, df['eto_14'], label='eto', linestyle='-', color='aqua')
-    plt.plot(df.index, df['eto_rain_14A'], label='eto-rain', linestyle='-', color='turquoise')
-    plt.plot(df.index, df['eto_rain_14B'], label='eto-rain', linestyle='-', color='blue')
+    plt.plot(df.index, df['eto_rain_14'], label='eto-rain', linestyle='-', color='turquoise')
     
     plt.xlabel('Day')
     plt.ylabel('inches')

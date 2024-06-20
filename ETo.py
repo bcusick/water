@@ -16,7 +16,7 @@ def fetch(data_year): #returns true if there is new data
     # Path to the JSON file
     file_path = f'ETo_{data_year}.json'
 
-    complete = False
+    complete = False  #dataset complete flag
     current_year = datetime.now().year
     yesterday = datetime.now() - timedelta(days=1)
 
@@ -25,7 +25,7 @@ def fetch(data_year): #returns true if there is new data
 
     if data_year == current_year:
         end_date = yesterday
-
+        
     # Check if the file exists
     if os.path.exists(file_path):
         # Load existing data
@@ -34,13 +34,22 @@ def fetch(data_year): #returns true if there is new data
         
         # Determine the last fetched date from existing data
         if existing_data:
-            last_fetched_date_str = existing_data[-1]['time']
-            last_fetched_date = datetime.strptime(last_fetched_date_str, "%Y-%m-%d")
 
-            if last_fetched_date.date() == end_date.date():
+            data_days = (end_date - start_date).days + 1 #how many days should be in dataset
+            
+            if data_days == len(existing_data): 
                 complete = True #dataset complete
             else:
-                start_date = last_fetched_date + timedelta(days=1)
+                try:   
+                    data_start_date_str = existing_data[0]['time']
+                    data_end_date_str = existing_data[-1]['time']
+                    data_start_date = datetime.strptime(data_start_date_str, "%Y-%m-%d")
+                    data_end_date = datetime.strptime(data_end_date_str, "%Y-%m-%d")
+                    if data_start_date.date() == start_date.date(): #beginning of data is good
+                        start_date = data_end_date + timedelta(days=1) #fetch only new data
+                    complete = False
+                except: #something is wrong with data, fetch entire dataset again
+                    complete = False
     else:
         existing_data = []
 
@@ -108,7 +117,7 @@ def call_API(start_date, end_date):
 
 def main():
     
-    fetch(2024)
+    fetch(2020)
 
 if __name__ == "__main__":
     main()

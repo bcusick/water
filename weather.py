@@ -34,13 +34,22 @@ def fetch(data_year): #returns true if there is new data
         
         # Determine the last fetched date from existing data
         if existing_data:
-            last_fetched_date_str = existing_data[-1]['date']
-            last_fetched_date = datetime.strptime(last_fetched_date_str, "%Y-%m-%d")
 
-            if last_fetched_date.date() == end_date.date():
+            data_days = (end_date - start_date).days + 1 #how many days should be in dataset
+            
+            if data_days == len(existing_data): 
                 complete = True #dataset complete
             else:
-                start_date = last_fetched_date + timedelta(days=1)
+                try:   
+                    data_start_date_str = existing_data[0]['date']
+                    data_end_date_str = existing_data[-1]['date']
+                    data_start_date = datetime.strptime(data_start_date_str, "%Y-%m-%d")
+                    data_end_date = datetime.strptime(data_end_date_str, "%Y-%m-%d")
+                    if data_start_date.date() == start_date.date(): #beginning of data is good
+                        start_date = data_end_date + timedelta(days=1) #fetch only new data
+                    complete = False
+                except: #something is wrong with data, fetch entire dataset again
+                    complete = False
     else:
         existing_data = []    
            
