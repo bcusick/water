@@ -4,9 +4,6 @@ import yaml
 import os
 from datetime import datetime, timedelta
 
-# Path to the JSON file
-file_path = f'weather_{data_year}.json'
-
 with open('config.yaml', 'r') as file:
         config_data = yaml.safe_load(file)
     
@@ -16,6 +13,9 @@ longitude   = config_data['longitude']
 
 def fetch(data_year): #returns true if there is new data
     
+    # Path to the JSON file
+    file_path = f'weather_{data_year}.json'
+
     complete = False
     current_year = datetime.now().year
     yesterday = datetime.now() - timedelta(days=1)
@@ -37,7 +37,7 @@ def fetch(data_year): #returns true if there is new data
             last_fetched_date_str = existing_data[-1]['date']
             last_fetched_date = datetime.strptime(last_fetched_date_str, "%Y-%m-%d")
 
-            if last_fetched_date == end_date:
+            if last_fetched_date.day == end_date.day:
                 complete = True #dataset complete
             else:
                 start_date = last_fetched_date + timedelta(days=1)
