@@ -17,6 +17,7 @@ def fetch(data_year): #returns true if there is new data
     file_path = f'ETo_{data_year}.json'
 
     complete = False  #dataset complete flag
+    error = False
     current_year = datetime.now().year
     yesterday = datetime.now() - timedelta(days=1)
 
@@ -41,15 +42,27 @@ def fetch(data_year): #returns true if there is new data
                 complete = True #dataset complete
             else:
                 try:   
-                    data_start_date_str = existing_data[0]['time']
-                    data_end_date_str = existing_data[-1]['time']
+                    data_start_date_str = existing_data[0]['date']
                     data_start_date = datetime.strptime(data_start_date_str, "%Y-%m-%d")
+                    data_end_date_str = existing_data[-1]['date']
                     data_end_date = datetime.strptime(data_end_date_str, "%Y-%m-%d")
-                    if data_start_date.date() == start_date.date(): #beginning of data is good
-                        start_date = data_end_date + timedelta(days=1) #fetch only new data
-                    complete = False
+
+                    if data_end_date.date() == end_date.date(): #data should be complete, but isn't
+                        error = True
+                        complete = False
+                    else:
+                        if data_start_date.date() == start_date.date(): #fetch new data if start date is correct
+                            start_date = data_end_date + timedelta(days=1)
+                            error = False
+                            complete = False
+                        else:
+                            error = True
+                            complete = False
                 except: #something is wrong with data, fetch entire dataset again
+                    error = True
                     complete = False
+            if error:
+                existing_data = [] #just start over
     else:
         existing_data = []
 

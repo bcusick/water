@@ -16,12 +16,13 @@ def fetch(data_year): #returns true if there is new data
     # Path to the JSON file
     file_path = f'weather_{data_year}.json'
 
-    complete = False
+    complete = False  #dataset complete flag
+    error = False
     current_year = datetime.now().year
     yesterday = datetime.now() - timedelta(days=1)
 
     start_date = datetime(data_year, 1, 1)
-    end_date = datetime(data_year, 12, 31)
+    end_date = datetime(data_year, 1, 10)
 
     if data_year == current_year:
         end_date = yesterday
@@ -42,14 +43,26 @@ def fetch(data_year): #returns true if there is new data
             else:
                 try:   
                     data_start_date_str = existing_data[0]['date']
-                    data_end_date_str = existing_data[-1]['date']
                     data_start_date = datetime.strptime(data_start_date_str, "%Y-%m-%d")
+                    data_end_date_str = existing_data[-1]['date']
                     data_end_date = datetime.strptime(data_end_date_str, "%Y-%m-%d")
-                    if data_start_date.date() == start_date.date(): #beginning of data is good
-                        start_date = data_end_date + timedelta(days=1) #fetch only new data
-                    complete = False
+
+                    if data_end_date.date() == end_date.date(): #data should be complete, but isn't
+                        error = True
+                        complete = False
+                    else:
+                        if data_start_date.date() == start_date.date(): #fetch new data if start date is correct
+                            start_date = data_end_date + timedelta(days=1)
+                            error = False
+                            complete = False
+                        else:
+                            error = True
+                            complete = False
                 except: #something is wrong with data, fetch entire dataset again
+                    error = True
                     complete = False
+            if error:
+                existing_data = [] #just start over
     else:
         existing_data = []    
            
@@ -98,7 +111,7 @@ def call_API(date):
 
 def main():
     
-    fetch(2024)
+    fetch(2020)
 
 if __name__ == "__main__":
     main()
