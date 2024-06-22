@@ -4,8 +4,8 @@ import numpy as np
 import yaml
 import json
 
-import ETo
-import weather
+import CIMIS
+import OWM
 
 def load_data(data_year):
     with open('config.yaml', 'r') as file:
@@ -17,21 +17,27 @@ def load_data(data_year):
     vines = config_data['vines']
     end_date = config_data['end_date']
 
+    CIMIS.fetch(data_year)
+    OWM.fetch(data_year)
+
+    '''
     retval = 1
-    retval &= ETo.fetch(data_year)
-    retval &= weather.fetch(data_year)
+    retval &= CIMIS.fetch(data_year)
+    retval &= OWM.fetch(data_year)
 
     if retval:
         print('data updated.')
     else:
-        #print('no new data')
+        print('no new data')
         pass
+    
+    '''
 
     # This dataset doesn't need processing, load as is
-    df1 = pd.read_json(f'ETo_{data_year}.json')
-    df1.rename(columns={"time": "date"}, inplace=True)
+    df1 = pd.read_json(f'weather_data/CIMIS_{data_year}.json')
+
     # Process 2nd dataset to extract relevant fields
-    with open(f'weather_{data_year}.json', 'r') as file:
+    with open(f'weather_data/OWM_{data_year}.json', 'r') as file:
         weather_data = json.load(file)
     weather_data_processed = []
     for entry in weather_data:
@@ -40,7 +46,6 @@ def load_data(data_year):
             "date": entry["date"],
             "min_temp": entry["temperature"]["min"],
             "max_temp": entry["temperature"]["max"],
-            "rainfall": rainfall,
         }
         weather_data_processed.append(new_entry)
 
@@ -67,8 +72,8 @@ def load_data(data_year):
     # calc additional data
     df['mean_temp'] = df[['min_temp', 'max_temp']].mean(axis=1)
     df['max_temp_F'] = df['max_temp'] * 9 / 5 + 32
-    df['eto_14'] = df['eto'].ewm(span=14, adjust=False).mean()
-    df['eto_rain'] = df['eto'] - df['rainfall']
+    df['eto_14'] = df['eto_cimis'].ewm(span=14, adjust=False).mean()
+    df['eto_rain'] = df['eto_cimis'] - df['rainfall']
     df['eto_rain'] = df['eto_rain'].apply(lambda x: max(0, x))  # Replace negative values with zero
     df['eto_rain_14'] = df['eto_rain'].ewm(span=14, adjust=False).mean()
     df['dd'] = df['mean_temp'] - 10
@@ -385,7 +390,7 @@ def plot_10(data_year):
 
 
 def main():
-    plot_1(2024)
+    #plot_1(2024)
     plot_1(2023)
     plot_1(2022)
 
