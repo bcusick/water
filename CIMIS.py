@@ -1,3 +1,4 @@
+import numpy as np
 import requests
 import json
 import yaml
@@ -42,27 +43,28 @@ def fetch(data_year):
                 try:
                     data_end_date_str = existing_data[-1]['date']
                     data_end_date = datetime.strptime(data_end_date_str, "%Y-%m-%d").date()
-                    start_date = data_end_date + timedelta(days=1)
+                    #start_date = data_end_date + timedelta(days=1)
+                    complete = False
                 except:  # something is wrong with data
                     existing_data = []  # just start over
-                complete = False
+                    complete = False
     else:
         existing_data = []
 
-        # Fetch new data - this section API Specific
-        if not complete:
-            new_data = call_api(start_date, end_date)
-            try:
-                with open(file_path, 'w') as f:
-                    json.dump(new_data, f, indent=4)
+    # Fetch new data - this section API Specific
+    if not complete:
+        new_data = call_api(start_date, end_date)
+        try:
+            with open(file_path, 'w') as f:
+                json.dump(new_data, f, indent=4)
 
-            except IOError as e:
-                print(f"Error writing to file: {e}")
-            retval = 1
-        else:
-            retval = 0
+        except IOError as e:
+            print(f"Error writing to file: {e}")
+        retval = 1
+    else:
+        retval = 0
 
-        return retval
+    return retval
 
 
 def call_api(start_date, end_date):
@@ -109,14 +111,11 @@ def call_api(start_date, end_date):
 
 def main():
 
-    # fetch a range of years when run standalone
-
-    years = [2024,
-             2023,
-             2022,
-             2021,
-             2020]
+    first = 1990
+    last = 1995
+    years = np.arange(first, last + 1)
     for year in years:
+        print(f'Fetching data for year {year}')
         fetch(year)
 
 if __name__ == "__main__":

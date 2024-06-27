@@ -19,7 +19,6 @@ def load(data_year):
     CIMIS.fetch(data_year)
     OWM.fetch(data_year)
 
-
     # This dataset doesn't need processing, load as is
     df1 = pd.read_json(f'weather_data/CIMIS_{data_year}.json')
 
@@ -72,6 +71,8 @@ def load(data_year):
     df['gal_75'] = 4 * 6 * 144 * df['eto_rain_14'] / 231 * df['kc'] * 0.75
     df['gal_50'] = 4 * 6 * 144 * df['eto_rain_14'] / 231 * df['kc'] * 0.5
 
+    df['inch_50'] = df['eto_rain'] * df['kc'] * 0.5 *5
+
     df['mins_100'] = 4 * 6 * 144 * df['eto_rain'] / 231 * df['kc'] * 1 * 60
     df['mins_50'] = 4 * 6 * 144 * df['eto_rain'] / 231 * df['kc'] * 0.5 * 60
 
@@ -94,7 +95,7 @@ def load(data_year):
     df['save_50_sum'] = df['save_50'].cumsum()
 
     # placeholder to view other scenarios
-    df['gal_max'] = 4 * 6 * 144 * df['eto_rain_14'] / 231 * 0.7 * 1
+    df['gal_max'] = 4 * 6 * 144 * df['eto_rain_14'] / 231 * 1 * .7
 
     return df
 
@@ -103,7 +104,7 @@ def load(data_year):
 
 
 def main():
-    load(2023)
+    load(2024)
 
 
 
