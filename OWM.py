@@ -97,7 +97,7 @@ def call_api(date):
 
 
 def main():
-    fetch(2024)
+    fetch(2019)
 
 
 if __name__ == "__main__":

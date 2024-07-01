@@ -92,7 +92,7 @@ def plot_D(data_year):
     df = data.load(data_year)
 
     plt.figure(figsize=(12, 6))
-    plt.plot(df.index, df['gal_max'], label='Simple', linestyle='-', color='silver')
+    #plt.plot(df.index, df['gal_max'], label='Simple', linestyle='-', color='silver')
     #plt.plot(df.index, df['gal_100'], label='100%', linestyle='-', color='aqua')
     #plt.plot(df.index, df['gal_75'], label='75%', linestyle='-', color='turquoise')
     plt.plot(df.index, df['gal_50'], label='50%', linestyle='-', color='aquamarine')
@@ -165,11 +165,76 @@ def plot_F(data_year):
     plt.show()
 
     return None
+
+def plot_G(data_year):
+    df = data.load(data_year)
+
+    plt.figure(figsize=(12, 6))
+
+    plt.plot(df.index, df['def_min'], label='min', linestyle='-', color='turquoise')
+    plt.plot(df.index, df['def_max'], label='max', linestyle='-', color='aquamarine')
+    plt.axhline(y=75, color='silver', linestyle='--')  # Adding a horizontal line at y=1
+    plt.axhline(y=50, color='silver', linestyle='--')  # Adding a horizontal line at y=1
+    plt.axhline(y=40, color='silver', linestyle='--')  # Adding a horizontal line at y=1
+    plt.axhline(y=30, color='silver', linestyle='--')  # Adding a horizontal line at y=1
+    plt.axhline(y=20, color='silver', linestyle='--')  # Adding a horizontal line at y=1
+    plt.axhline(y=10, color='silver', linestyle='--')  # Adding a horizontal line at y=1
+
+
+    plt.xlabel('Day')
+    plt.ylabel('% Actual')
+    plt.title(f'% Deficit at Soil Capacity {data_year}')
+
+    #plt.ylim(0, 1.5)  # Set the y-axis limits
+    plt.grid(axis='x', linestyle='--')
+    plt.legend()
+    plt.show()
+
+    return None
+
+def plot_Comp(years):
+    plt.figure(figsize=(12, 6))
+
+    for year in years:
+        if year == 2019:
+            continue
+        df = data.load(year)
+        plt.plot(df['day_of_year'], df['gal_50'], label=f'{year}', linestyle='-')
+
+    plt.axhline(y=0.83, color='silver', linestyle='-')  # Adding a horizontal line at y=1
+    plt.text(2, 0.86, '5-hour', color='black', fontsize=10, va='center')
+
+    plt.axhline(y=1, color='silver', linestyle='-')  # Adding a horizontal line at y=1
+    plt.text(2, 1.03, '6-hour', color='black', fontsize=10, va='center')
+
+    plt.axhline(y=1.17, color='silver', linestyle='-')  # Adding a horizontal line at y=1
+    plt.text(2, 1.2, '7-hour', color='black', fontsize=10, va='center')
+
+    plt.axhline(y=1.333, color='silver', linestyle='-')  # Adding a horizontal line at y=1
+    plt.text(2, 1.363, '8-hour', color='black', fontsize=10, va='center')
+
+    plt.axhline(y=1.5, color='silver', linestyle='-')  # Adding a horizontal line at y=1
+    plt.text(2, 1.53, '9-hour', color='black', fontsize=10, va='center')
+
+    plt.axhline(y=2, color='silver', linestyle='--')  # Adding a horizontal line at y=1
+    plt.text(2, 2.03, '12-hour Max', color='black', fontsize=10, va='center')
+
+    plt.xlabel('Day of Year')
+    plt.ylabel('Gal/day')
+    plt.title(f'Yearly Water Requirements')
+
+    #plt.ylim(0, 1.5)  # Set the y-axis limits
+    plt.grid(axis='x', linestyle='--')
+    plt.legend()
+    plt.show()
 ###############################################################################
 
 
 def main():
-    plot_D(2024)
+    first = 2020
+    last = 2024
+    years = np.arange(first, last + 1)
+    plot_Comp(years)
 
 if __name__ == "__main__":
     main()

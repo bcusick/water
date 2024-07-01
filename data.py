@@ -51,16 +51,19 @@ def load(data_year):
     # Filter DataFrame based on date range
     set_start_date = pd.to_datetime(f'{data_year}-{budBreak}')
     set_end_date = pd.to_datetime(f'{data_year}-{end_date}')
-    df = merged_df[(merged_df.index >= set_start_date) & (merged_df.index <= set_end_date)]
+    df = merged_df
+    #df = merged_df[(merged_df.index >= set_start_date) & (merged_df.index <= set_end_date)]
+
     ############################################################################
     pd.options.mode.chained_assignment = None
 
     # calc additional data
+    df['day_of_year'] = df.index.dayofyear
     df['mean_temp'] = df[['min_temp', 'max_temp']].mean(axis=1)
     df['max_temp_F'] = df['max_temp'] * 9 / 5 + 32
     df['eto_14'] = df['eto_cimis'].ewm(span=14, adjust=False).mean()
-    df['eto_rain'] = df['eto_cimis'] - df['rainfall']
-    df['eto_rain'] = df['eto_rain'].apply(lambda x: max(0, x))  # Replace negative values with zero
+    df['eto_rain_raw'] = df['eto_cimis'] - df['rainfall']
+    df['eto_rain'] = df['eto_rain_raw'].apply(lambda x: max(0, x))  # Replace negative values with zero
     df['eto_rain_14'] = df['eto_rain'].ewm(span=14, adjust=False).mean()
     df['dd'] = df['mean_temp'] - 10
     df['dd'] = df['dd'].apply(lambda x: max(0, x))  # Replace negative values with zero
@@ -70,6 +73,11 @@ def load(data_year):
     df['gal_100'] = 4 * 6 * 144 * df['eto_rain_14'] / 231 * df['kc'] * 1
     df['gal_75'] = 4 * 6 * 144 * df['eto_rain_14'] / 231 * df['kc'] * 0.75
     df['gal_50'] = 4 * 6 * 144 * df['eto_rain_14'] / 231 * df['kc'] * 0.5
+    df['def_min'] = (4.5 / 6) / df['gal_100'] * 100
+    df['def_max'] = (2 / 6) / df['gal_100'] * 100
+
+    df['def_min'] = df['def_min'].apply(lambda x: min(x, 100))
+    df['def_max'] = df['def_max'].apply(lambda x: min(x, 100))
 
     df['inch_50'] = df['eto_rain'] * df['kc'] * 0.5 *5
 
@@ -95,8 +103,9 @@ def load(data_year):
     df['save_50_sum'] = df['save_50'].cumsum()
 
     # placeholder to view other scenarios
-    df['gal_max'] = 4 * 6 * 144 * df['eto_rain_14'] / 231 * 1 * .7
-
+    df['gal_cap'] = 450 * df['eto_rain_raw'] / 231
+    df['gal_max'] = 450 * df['eto_cimis'] / 231 #calculated emitter affected area
+    pass
     return df
 
 
@@ -104,7 +113,7 @@ def load(data_year):
 
 
 def main():
-    load(2024)
+    load(2018)
 
 
 

@@ -40,14 +40,8 @@ def fetch(data_year):
             if data_days == len(existing_data):
                 complete = True  # dataset complete
             else:
-                try:
-                    data_end_date_str = existing_data[-1]['date']
-                    data_end_date = datetime.strptime(data_end_date_str, "%Y-%m-%d").date()
-                    #start_date = data_end_date + timedelta(days=1)
-                    complete = False
-                except:  # something is wrong with data
-                    existing_data = []  # just start over
-                    complete = False
+                existing_data = []  # just start over
+                complete = False
     else:
         existing_data = []
 
