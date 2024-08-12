@@ -53,9 +53,9 @@ df['percent2'] = (df['gal_3'] - df['gal_4']) / df['gal_3']
 plt.figure(figsize=(12, 6))
 
 #plt.plot(df['diameter'], df['gal_8'], label='8"', linestyle='-', color='green')
-#plt.plot(df['diameter'], df['gal_4'], label='maximum', linestyle='-', color='aqua')
+plt.plot(df['diameter'], df['gal_4'], label='maximum', linestyle='-', color='aqua')
 plt.plot(df['diameter'], df['gal_3'], label='maximum', linestyle='-', color='aqua')
-#plt.plot(df['diameter'], df['gal_2'], label='minimum', linestyle='-', color='purple')
+plt.plot(df['diameter'], df['gal_2'], label='minimum', linestyle='-', color='purple')
 plt.plot(df['diameter'], df['gal_1'], label='minimum', linestyle='-', color='violet')
 
 

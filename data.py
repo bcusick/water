@@ -52,7 +52,7 @@ def load(data_year):
     set_start_date = pd.to_datetime(f'{data_year}-{budBreak}')
     set_end_date = pd.to_datetime(f'{data_year}-{end_date}')
     df = merged_df
-    #df = merged_df[(merged_df.index >= set_start_date) & (merged_df.index <= set_end_date)]
+    df = merged_df[(merged_df.index >= set_start_date) & (merged_df.index <= set_end_date)]
 
     ############################################################################
     pd.options.mode.chained_assignment = None
@@ -73,6 +73,7 @@ def load(data_year):
     df['gal_100'] = 4 * 6 * 144 * df['eto_rain_14'] / 231 * df['kc'] * 1
     df['gal_75'] = 4 * 6 * 144 * df['eto_rain_14'] / 231 * df['kc'] * 0.75
     df['gal_50'] = 4 * 6 * 144 * df['eto_rain_14'] / 231 * df['kc'] * 0.5
+    df['gal_50_daily'] = 4 * 6 * 144 * df['eto_rain'] / 231 * df['kc'] * 0.5
     df['def_min'] = (4.5 / 6) / df['gal_100'] * 100
     df['def_max'] = (2 / 6) / df['gal_100'] * 100
 

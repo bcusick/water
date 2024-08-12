@@ -19,6 +19,8 @@ def plot_A(data_year):
     plt.show()
 
     return None
+
+
 def plot_B(data_year):
     df = data.load(data_year)
 
@@ -95,7 +97,8 @@ def plot_D(data_year):
     #plt.plot(df.index, df['gal_max'], label='Simple', linestyle='-', color='silver')
     #plt.plot(df.index, df['gal_100'], label='100%', linestyle='-', color='aqua')
     #plt.plot(df.index, df['gal_75'], label='75%', linestyle='-', color='turquoise')
-    plt.plot(df.index, df['gal_50'], label='50%', linestyle='-', color='aquamarine')
+    plt.plot(df.index, df['gal_50_daily'], label='daily', linestyle='-', color='turquoise')
+    plt.plot(df.index, df['gal_50'], label='2week avg', linestyle='-', color='aquamarine')
 
     plt.axhline(y=0.83, color='silver', linestyle='-')  # Adding a horizontal line at y=1
     plt.text(df.index[0], 0.86, '5-hour', color='black', fontsize=10, va='center')
@@ -111,12 +114,15 @@ def plot_D(data_year):
     plt.axhline(y=1.333, color='silver', linestyle='-')  # Adding a horizontal line at y=1
     plt.text(df.index[0], 1.363, '8-hour', color='black', fontsize=10, va='center')
 
+    plt.axhline(y=1.5, color='silver', linestyle='-')  # Adding a horizontal line at y=1
+    plt.text(df.index[0], 1.53, '9-hour', color='black', fontsize=10, va='center')
+
     plt.axhline(y=2, color='silver', linestyle='--')  # Adding a horizontal line at y=1
     plt.text(df.index[0], 2.03, '12-hour Max', color='black', fontsize=10, va='center')
 
     plt.xlabel('Day')
     plt.ylabel('Gal/day')
-    plt.title(f'Gallons/day v. % Deficit {data_year}')
+    plt.title(f'Gallons/day {data_year}')
 
     #plt.ylim(0, 1.5)  # Set the y-axis limits
     plt.grid(axis='x', linestyle='--')
@@ -193,39 +199,40 @@ def plot_G(data_year):
     return None
 
 def plot_Comp(years):
-    plt.figure(figsize=(12, 6))
-
+    # Create a plot
+    fig, ax = plt.subplots(figsize=(12, 6))
+    #ax.plot(x, y)
     for year in years:
-        if year == 2019:
-            continue
         df = data.load(year)
-        plt.plot(df['day_of_year'], df['gal_50'], label=f'{year}', linestyle='-')
+        ax.plot(df['day_of_year'], df['gal_50'], label=f'{year}', linestyle='-')
+    # Add a horizontal band
+    ax.axhspan(ymin=0.333, ymax=0.666, facecolor='lightgray', alpha=0.25, hatch='/')
 
-    plt.axhline(y=0.83, color='silver', linestyle='-')  # Adding a horizontal line at y=1
-    plt.text(2, 0.86, '5-hour', color='black', fontsize=10, va='center')
+    ax.axhline(y=0.83, color='silver', linestyle='-')  # Adding a horizontal line at y=1
+    ax.text(2, 0.86, '5-hour', color='black', fontsize=10, va='center')
 
-    plt.axhline(y=1, color='silver', linestyle='-')  # Adding a horizontal line at y=1
-    plt.text(2, 1.03, '6-hour', color='black', fontsize=10, va='center')
+    ax.axhline(y=1, color='silver', linestyle='-')  # Adding a horizontal line at y=1
+    ax.text(2, 1.03, '6-hour', color='black', fontsize=10, va='center')
 
-    plt.axhline(y=1.17, color='silver', linestyle='-')  # Adding a horizontal line at y=1
-    plt.text(2, 1.2, '7-hour', color='black', fontsize=10, va='center')
+    ax.axhline(y=1.17, color='silver', linestyle='-')  # Adding a horizontal line at y=1
+    ax.text(2, 1.2, '7-hour', color='black', fontsize=10, va='center')
 
-    plt.axhline(y=1.333, color='silver', linestyle='-')  # Adding a horizontal line at y=1
-    plt.text(2, 1.363, '8-hour', color='black', fontsize=10, va='center')
+    ax.axhline(y=1.333, color='silver', linestyle='-')  # Adding a horizontal line at y=1
+    ax.text(2, 1.363, '8-hour', color='black', fontsize=10, va='center')
 
-    plt.axhline(y=1.5, color='silver', linestyle='-')  # Adding a horizontal line at y=1
-    plt.text(2, 1.53, '9-hour', color='black', fontsize=10, va='center')
+    ax.axhline(y=1.5, color='silver', linestyle='-')  # Adding a horizontal line at y=1
+    ax.text(2, 1.53, '9-hour', color='black', fontsize=10, va='center')
 
-    plt.axhline(y=2, color='silver', linestyle='--')  # Adding a horizontal line at y=1
-    plt.text(2, 2.03, '12-hour Max', color='black', fontsize=10, va='center')
+    ax.axhline(y=2, color='silver', linestyle='--')  # Adding a horizontal line at y=1
+    ax.text(2, 2.03, '12-hour Max', color='black', fontsize=10, va='center')
 
-    plt.xlabel('Day of Year')
-    plt.ylabel('Gal/day')
-    plt.title(f'Yearly Water Requirements')
+    ax.set_xlabel('Day of Year')
+    ax.set_ylabel('Gal/day')
+    ax.set_title(f'Yearly Water Requirements')
 
     #plt.ylim(0, 1.5)  # Set the y-axis limits
-    plt.grid(axis='x', linestyle='--')
-    plt.legend()
+    ax.grid(axis='x', linestyle='--')
+    ax.legend()
     plt.show()
 ###############################################################################
 
@@ -234,7 +241,10 @@ def main():
     first = 2020
     last = 2024
     years = np.arange(first, last + 1)
-    plot_Comp(years)
+    #plot_Comp(years)
+
+    plot_D(2024)
+    #plot_E(2024)
 
 if __name__ == "__main__":
     main()

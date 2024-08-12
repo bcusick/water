@@ -108,9 +108,11 @@ def main():
     first = 1990
     last = 1995
     years = np.arange(first, last + 1)
-    for year in years:
-        print(f'Fetching data for year {year}')
-        fetch(year)
+    #for year in years:
+        #print(f'Fetching data for year {year}')
+        #fetch(year)
+
+    fetch(2024)
 
 if __name__ == "__main__":
     main()
